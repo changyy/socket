@@ -11,9 +11,14 @@
 #define MAXBUF       512
 int main(int argc, char **argv ) {
 	char buf[MAXBUF+1];
-	int rc, i, target, next, max, sfd, cfd[MAX_USERS+1], clen[MAX_USERS+1];
+	int rc, i, target, next, max, optval, sfd, cfd[MAX_USERS+1], clen[MAX_USERS+1];
 	struct sockaddr_in srv, cli[MAX_USERS+1];
 	fd_set readfds;
+
+	if( argc < 2 ) {
+		printf("Usage> %s port\n", argv[0] );
+		exit(0);
+	}
 	
 	// create a socket
 	if( (sfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) { 
@@ -25,6 +30,9 @@ int main(int argc, char **argv ) {
 	srv.sin_family = AF_INET; 
 	srv.sin_addr.s_addr = INADDR_ANY;
 	srv.sin_port = htons(atoi(argv[1]));
+
+	optval = 1;
+	setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &optval, (socklen_t)sizeof(optval) );
 	
 	// bind
 	if( bind(sfd, (struct sockaddr*)&srv, sizeof(srv)) <0 ){ 
