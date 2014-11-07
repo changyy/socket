@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
 	FD_ZERO(&readfds);
 
 	while(1){
+		FD_ZERO(&readfds);
 		FD_SET(0,&readfds);
 		FD_SET(sockd, &readfds);
 
